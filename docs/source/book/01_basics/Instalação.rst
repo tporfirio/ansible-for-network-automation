@@ -12,7 +12,6 @@ Requisitos de host de gerenciamento:
 
     O livro usa o Ansible versão 2.9
 
-
 O Ansible é atualizado com bastante frequência; portanto, é melhor instalá-lo em um ambiente virtual. Novas versões são lançadas aproximadamente a cada seis meses.
 
 Iremos utilizar o parâmetro pip para instalar o Ansible:
