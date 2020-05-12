@@ -12,7 +12,7 @@ Além disso, o Ansible está desenvolvendo ativamente o suporte a equipamentos d
    :maxdepth: 2
 
    book/01_basics/index.rst
-   book/02_playbook_basics_/index.rst
+   book/02_playbook_basics/index.rst
    book/03_network_os_modules_/index.rst
    book/04_network_resource_modules_/index.rst
    book/05_network_cli_modules_/index.rst
