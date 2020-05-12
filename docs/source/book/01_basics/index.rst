@@ -24,7 +24,7 @@ Ansible:
 -  **Inventory** — é o arquivo onde são armazenados dados dos hosts remotos.
 -  **Playbook** — se refere ao manual onde as tasks são escritas.
 -  **Task** — é uma variável onde são alocados parâmetros de configuração e verificação.
--  **Module** — são pacotes comprimidos baseados no nível de configuração de cada SO, por exemplo, desejo enviar configurações para os devices remotos (Cisco) e quero apenas atingirar a camada de configuração (config), para este exemplo, devo me basear no módulo ios_config.
+-  **Module** — são pacotes comprimidos baseados no nível de configuração de cada Sistema Operacional, por exemplo, desejo enviar configurações para os devices remotos (Cisco) e quero apenas atingirar a camada de configuração (config), para este exemplo, devo me basear no módulo ios_config.
 
 A lista completa dos termos você encontra nessa
 `documentação <http://docs.ansible.com/ansible/devel/glossary.html>`__.
