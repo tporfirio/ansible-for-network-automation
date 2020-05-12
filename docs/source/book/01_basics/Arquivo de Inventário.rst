@@ -1,4 +1,4 @@
-Inventário
+Arquivo de Inventário
 ----------------
 
 Um arquivo de inventário é um arquivo que descreve os dispositivos aos quais o Ansible se conectará.
