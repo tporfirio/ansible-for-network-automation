@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Ansible для сетевых инженеров'
-copyright = '2020, Natasha Samoylenko'
-author = 'Natasha Samoylenko'
+project = 'Ansible para Automação de Rede'
+copyright = '2020, Thiago Porfirio'
+author = 'Thiago Porfirio'
 
 # The full version, including alpha/beta/rc tags
 release = '0.0.5'
