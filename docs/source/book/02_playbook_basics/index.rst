@@ -4,23 +4,56 @@
 
 .. _ansible_basics_index:
 
-2. Основы playbooks
+2. Noções básicas de playbooks
 ===================
-Playbook (файл сценариев) — это файл, в котором описываются действия,
-которые нужно выполнить на какой-то группе хостов.
 
-Внутри playbook: 
+Playbook (arquivo de script) é um arquivo que descreve as ações que precisam ser executadas em um grupo de hosts.
 
-* play - это набор задач, которые нужно выполнить для группы хостов 
-* task - это конкретная задача. В задаче есть как минимум: 
+Principais parâmetros alocadas dentro do playbook: 
 
-  * описание (название задачи можно не писать, но очень рекомендуется) 
-  * модуль и команда (действие в модуле)
+* hosts - neste parâmetro deverá inserir um host em específico ou um grupo de hosts no qual você deseja enviar tarefas. 
+* task - é baseada em módulos, ao especificar o módulo, deverá inserir os parâmetros complimentares que fazem parte do módulo escolhido para trabalhar.
 
+.. note::
+    
+    Uma task pode-se trabalhar com diversos módulos sendo executados de modo sequêncial de tarefas, segue exemplo mostrado abaixo:
+    
+.. code:: yaml
+
+     tasks:
+    - name: Configurando VTP Transparent mode e NTP em todos os switches 
+      ios_config: # Módulo de configuração       
+        lines:
+          - vtp domain ansible
+          - vtp mode transparent         
+        
+      register: print_output # Armazenando os dados executados no módulo acima    
+
+# Create VLANS
+    - name: Criando VLANS 10, 20, 30 e 40
+      ios_vlan:
+        aggregate:
+          - vlan_id: 10              
+            name: VLAN 10          
+            state: active
+
+          - vlan_id: 20              
+            name: VLAN 20          
+            state: active 
+
+          - vlan_id: 30              
+            name: VLAN 30          
+            state: active
+
+          - vlan_id: 40              
+            name: VLAN 40          
+            state: active          
+          
+      register: print_output
 
 .. toctree::
    :maxdepth: 1
 
    README
-   variables
-   result
+   Variáveis
+   Trabalhar com resultados de execução do módulo
