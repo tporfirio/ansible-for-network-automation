@@ -16,7 +16,7 @@ Esses parâmetro irá criar a vlan 15 nomeá-la com o nome de VLAN 15.
 
 Caso você queira criar duas ou mais vlans nos hosts de destino, deverá escrever o playbook com os seguintes parâmetros:
 
-```yaml
+.. code:: yaml
     
     - name: Criando VLANS 15 e 25
       ios_vlan:
@@ -28,5 +28,5 @@ Caso você queira criar duas ou mais vlans nos hosts de destino, deverá escreve
           - vlan_id: 25              
             name: VLAN 25          
             state: active
-```
+
 Para visualizar a lista de módulos suportados pelo Ansible, você pode verificar nessa `documentação <https://docs.ansible.com/ansible/latest/reference_appendices/config.html#common-options>`__.
