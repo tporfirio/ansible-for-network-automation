@@ -1,4 +1,4 @@
-Ansible for Network Automation
+Ansible para Automação de Rede
 =============================
 
 Ansible é um sistema de gerenciamento de configuração. O Ansible permite automatizar e simplificar a configuração, manutenção e implantação de servidores, serviços, software, etc.
