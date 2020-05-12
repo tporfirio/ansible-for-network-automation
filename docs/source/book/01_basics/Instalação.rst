@@ -1,50 +1,22 @@
 Instalação
 -----------------
 
-Ansible нужно устанавливать только на той машине, с которой будет
-выполняться управление устройствами.
+O Ansible deve ser instalado apenas na máquina com a qual o gerenciamento do dispositivo será executado.
 
-Требования к управляющему хосту: 
+Requisitos de host de gerenciamento:
 
-* поддержка Python 3 (тестировалось на 3.7) 
-* Windows не может быть управляющим хостом
+* Suporte para Python 3 (testado em 3.8)
+* O Windows não pode ser o host de controle.
 
 .. note::
 
-    В книге используется Ansible версии 2.9
+    O livro usa o Ansible versão 2.9
 
 
-Ansible довольно часто обновляется, поэтому лучше установить его в
-виртуальном окружении. Новые версии выходят примерно раз в полгода.
+O Ansible é atualizado com bastante frequência; portanto, é melhor instalá-lo em um ambiente virtual. Novas versões são lançadas aproximadamente a cada seis meses.
 
-Установить Ansible можно
-`по-разному <http://docs.ansible.com/ansible/intro_installation.html#>`__.
-
-С помощью pip Ansible можно установить таким образом:
+Iremos utilizar o parâmetro pip para instalar o Ansible:
 
 ::
 
     $ pip install ansible
-
-
-В примерах раздела используются три маршрутизатора. К
-ним нет никаких требований, только настроенный SSH.
-
-Параметры, которые используются в разделе: 
-
-* пользователь: cisco 
-* пароль: cisco 
-* пароль на режим enable: cisco 
-* SSH версии 2 
-* IP-адреса: 
-
-  * R1: 192.168.100.1 
-  * R2: 192.168.100.2 
-  * R3: 192.168.100.3 
-
-.. note::
-
-    Если вы будете использовать другие параметры, измените
-    соответственно инвентарный файл, конфигурационный файл Ansible и
-    файл group_vars/all.yml.
-
