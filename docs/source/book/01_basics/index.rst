@@ -4,57 +4,35 @@
 
 .. _ansible_basics_index:
 
-1. Основы Ansible
+1. Ansible Fundamentos
 ============================
 
 Ansible: 
+* Funciona sem instalar o agente em hosts gerenciados.
+* Usa SSH para conectar-se a hosts gerenciados. 
+* Executa alterações usando módulos Python que são executados em hosts gerenciados.
+* Pode executar ações localmente no host de gerenciamento.
+* Usa YAML para descrever scripts.
+* Contém muitos módulos (seu número está aumentando constantemente).
+* Você pode escrever seus próprios módulos.
 
-* Работает без установки агента на управляемые хосты 
-* Использует SSH для подключения к управляемым хостам 
-* Выполняет изменения с помощью модулей Python, 
-  которые выполняются на управляемых хостах 
-* Может выполнять действия локально на управляющем хосте 
-* Использует YAML для описания сценариев 
-* Содержит множество модулей (их количество постоянно растет) 
-* Можно писать свои модули
+Тerminologia:
+-  **Control node** — o host de gerenciamento. Servidor possível a partir do qual outros hosts são gerenciados.
+-  **Managed nodes** — são hosts que so gerenciados pelo control node.
+-  **Inventory** — é o arquivo onde são armazenados dados dos hosts remotos.
+-  **Playbook** — se refere ao manual onde as tasks são escritas.
+-  **Task** — é uma variável onde são alocados parâmetros de configuração e verificação.
+-  **Module** — são pacotes comprimidos baseados no nível de configuração de cada SO, por exemplo, desejo enviar configurações para os devices remotos (Cisco) e quero apenas atingirar a camada de configuração (config), para este exemplo, devo me basear no módulo ios_config.
 
-Терминология:
-
--  **Control machine** — управляющий хост. Сервер Ansible, с которого
-   происходит управление другими хостами
--  **Manage node** — управляемые хосты
--  **Inventory** — инвентарный файл. В этом файле описываются хосты,
-   группы хостов, а также могут быть созданы переменные
--  **Playbook** — файл сценариев
--  **Play** — сценарий (набор задач). Связывает задачи с хостами, для
-   которых эти задачи надо выполнить
--  **Task** — задача. Вызывает модуль с указанными параметрами и
-   переменными
--  **Module** — модуль Ansible. Реализует определенные функции
-
-Список терминов в
-`документации <http://docs.ansible.com/ansible/devel/glossary.html>`__.
-
-
-С Ansible достаточно просто начать работать. Минимум, который нужен для
-начала работы: 
-
-* инвентарный файл - в нём описываются устройства 
-* изменить конфигурацию Ansible для работы с сетевым оборудованием 
-* разобраться с ad-hoc командами - это возможность выполнять простые
-  действия с устройствами из командной строки 
-* например, с помощью ad-hoc команд можно отправить команду show на несколько устройств
-
-Намного больше возможностей появится при использовании playbook (файлы
-сценариев). Но ad-hoc команды намного проще начать использовать. И с
-ними легче начать разбираться с Ansible.
+A lista completa dos termos você encontra nessa
+`дdocumentação <http://docs.ansible.com/ansible/devel/glossary.html>`__.
 
 .. toctree::
    :maxdepth: 1
 
-   install
-   inventory
-   ad-hoc
-   configuration
-   modules
-   network_cli
+   Instalação
+   inventario
+   Comandos Ad-Hoc
+   Configuração
+   Módulos
+   Network_cli
