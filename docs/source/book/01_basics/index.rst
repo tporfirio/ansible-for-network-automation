@@ -19,7 +19,7 @@ Ansible:
 
 Тerminologia:
 
--  **Control node** — o host de gerenciamento. Servidor possível a partir do qual outros hosts são gerenciados.
+-  **Control node** — é o host no qual envia tasks de comandos para os hosts remotos
 -  **Managed nodes** — são hosts que so gerenciados pelo control node.
 -  **Inventory** — é o arquivo onde são armazenados dados dos hosts remotos.
 -  **Playbook** — se refere ao manual onde as tasks são escritas.
