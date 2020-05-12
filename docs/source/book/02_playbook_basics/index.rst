@@ -54,6 +54,6 @@ Principais parâmetros alocadas dentro do playbook:
 .. toctree::
    :maxdepth: 1
 
-   README
+   Sintaxe do playbook
    Variáveis
    Trabalhar com resultados de execução do módulo
