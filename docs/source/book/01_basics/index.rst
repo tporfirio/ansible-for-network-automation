@@ -33,7 +33,7 @@ A lista completa dos termos você encontra nessa
    :maxdepth: 1
 
    Instalação
-   inventario
+   inventário
    Comandos Ad-Hoc
    Configuração
    Módulos
