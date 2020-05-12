@@ -3,9 +3,9 @@ Comandos Ad-Hoc
 
 Comandos Ansible Ad-Hoc é um meio mais rápido de fazer alguma tarefa ou verificar alguma configuração sem a necessidade de criar um playbook.
 
-Essa opção é usadas nos casos em que você precisa verificar algo, execute alguma ação única que não precise ser salva. De qualquer forma, esta é uma maneira fácil e rápida de começar a usar o Ansible.
+Essa opção é usada nos casos em que você precisa verificar algo ou executar alguma ação única que não precise ser salva. De qualquer forma, esta é uma maneira fácil e rápida de começar a usar o Ansible.
 
-Primeiro, você precisa criar um arquivo de inventário no diretório de sua preferência ou poderá utilizar o arquivo armazenado no diretório padrão ``/etc/ansible/hosts``. Irei criar no diretório ``/home/thiago/Documentos/Code/Ansible/lab1/hosts``.  Vamos chamá-lo de hosts:
+Primeiro, você precisa criar um arquivo de inventário no diretório de sua preferência ou poderá utilizar o arquivo armazenado no diretório padrão ``/etc/ansible/hosts``. Irei criar no diretório ``/home/thiago/Documentos/Code/Ansible/lab1/``.  Vamos chamá-lo de hosts:
 
 .. code:: ini
 
@@ -30,7 +30,7 @@ Vamos entender os parâmetros do comando acima:
   * Se você precisar especificar todos os hosts do arquivo, poderá usar o parâmetro "all".
 
 * ``-m`` - especifica o módulo de execução.
-* ``raw`` - parâmetro "módulo" de execução, este parâmetro deve ser seguido por algum comando à nível de usuário privilegiado independente de qual dispositivo de destino.
+* ``raw`` - parâmetro (módulo) de execução, este parâmetro deve ser seguido por algum comando à nível de usuário privilegiado independente de qual dispositivo de destino.
 * ``-u teste`` - usuário remoto utilizado para estabelecer a conexão SSH. 
 * ``-k`` - especifica a senha do usuário descrito no parâmetro anterior, a senha deve ser inserida após a execução do comando Ad-Hoc.
 
@@ -71,13 +71,13 @@ Abaixo segue outro exemplo do Ad-Hoc em ação:
 
     $ ansible ansible_core -i ./hosts -m raw -a "show users" -u teste -k
 
-Os valores acima irá executar o comando "show users" em todos os hosts do grupo "ansible_core" alocados dentro do arquivo "./hosts" e o parâmetro "-a" permite enviar argumentos para os dispositivos remotos.
+Os valores acima irão executar o comando ``show users`` em todos os hosts do grupo ``ansible_core`` alocados dentro do arquivo ``./hosts`` e o parâmetro ``-a`` permite enviar argumentos para os dispositivos remotos.
 
 O resultado dessa execução será assim:
 
 .. code:: bash
 
-    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible ansible_core -i ./hosts -m raw -a "show users" -u             teste -k
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible ansible_core -i ./hosts -m raw -a "show users" -u teste -k
     SSH password: 
     SW_CORE_1 | CHANGED | rc=0 >>
         Line       User       Host(s)              Idle       Location
@@ -94,13 +94,13 @@ O resultado dessa execução será assim:
       Interface    User               Mode         Idle     Peer Address
     Shared connection to sw_core_2 closed.
 
-Mais um exemplo do do comando Ad-Hoc:
+Mais um exemplo do comando Ad-Hoc:
 
 .. code:: bash
 
     $ ansible ansible_core -i ./hosts -m raw -a "show run" -u teste -k | grep 'hostname\|username' > usernames.txt
 
-Acima, definimos que irá ser executado o comando "show run" em todos os devices do grupo "ansible_core", porém, desejamos que apenas as linhas "hostname e username" sejam gravadas no txt "usernames.txt".
+Acima, definimos que irá ser executado o comando ``show run`` em todos os devices do grupo ``ansible_core``, porém, desejamos que apenas as linhas ``'hostname\|username'`` sejam gravadas no txt ``> usernames.txt``.
 
 O resultado dessa execução será assim:
 
@@ -116,7 +116,7 @@ Um exemplo muito além e que irá nos ajudar a fazer outras combinações para l
 
 .. code:: bash
 
-    $ ansible ansible_core -i hosts -c network_cli -e ansible_network_os=ios -u teste -k -m ios_config -a "commands='vlan 200'"
+    $ ansible ansible_core -i hosts -c network_cli -e ansible_network_os=ios -u teste -k -m ios_config -a "commands='vlan 15'"
     
 Vamos lidar com os principais parâmetros do comando:
 
@@ -124,26 +124,39 @@ Vamos lidar com os principais parâmetros do comando:
 * ``-i hosts`` - arquivo hosts
 * ``-c network_cli`` - a opção -c permite especificar o tipo de conexão. O tipo network_cli se refere ao protocolo SSH sobre CLI.
 * ``-e ansible_network_os=ios`` - especifica o tipo de plataforma dos dispositivos do grupo ansbile_core.
-* ``-m ios_config`` - este comando permite especificar o tipo de módulo a ser utilizado.
-* ``"commands='<comando CLI>'"`` - comando a ser enviado para os dispositivos remotos.
+* ``-m ios_config`` - este comando permite especificar o tipo do módulo a ser utilizado.
+* ``"commands='vlan 15'"`` - comando a ser enviado para os dispositivos remotos.
 
 O resultado será assim:
 
 .. code:: bash
 
-    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible ansible_core -i hosts -c network_cli -e                       ansible_network_os=ios -u teste -k -m ios_config -a "commands='vlan 200'"
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible ansible_core -i hosts -c network_cli -e             ansible_network_os=ios -u teste -k -m ios_config -a "commands='vlan 15'"
     SSH password: 
     
-    SW_CORE_1 | SUCCESS => {
-        "ansible_facts": {
-            "discovered_interpreter_python": "/usr/bin/python"
-        },
-        "changed": false
-    }
-
-    SW_CORE_2 | SUCCESS => {
-        "ansible_facts": {
-            "discovered_interpreter_python": "/usr/bin/python"
-        },
-        "changed": false
-    }
+    SW_CORE_2 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "banners": {},
+    "changed": true,
+    "commands": [
+        "vlan 15"
+    ],
+    "updates": [
+        "vlan 15"
+    ]
+}
+    SW_CORE_1 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python"
+    },
+    "banners": {},
+    "changed": true,
+    "commands": [
+        "vlan 15"
+    ],
+    "updates": [
+        "vlan 15"
+    ]
+}
