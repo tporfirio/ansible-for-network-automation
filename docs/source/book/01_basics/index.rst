@@ -33,8 +33,8 @@ A lista completa dos termos você encontra nessa
    :maxdepth: 1
 
    Instalação
-   Inventário
+   Arquivo de inventário
    Comandos Ad-Hoc
-   Configuração
+   Arquivo de configuração
    Módulos
    network_cli
