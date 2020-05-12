@@ -29,7 +29,7 @@ Principais parâmetros alocadas dentro do playbook:
         
       register: print_output # Armazenando os dados executados no módulo acima    
 
-# Create VLANS
+      # Create VLANS
     - name: Criando VLANS 10, 20, 30 e 40
       ios_vlan:
         aggregate:
