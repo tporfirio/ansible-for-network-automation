@@ -127,36 +127,4 @@ Vamos lidar com os principais parâmetros do comando:
 * ``-m ios_config`` - este comando permite especificar o tipo do módulo a ser utilizado.
 * ``"commands='vlan 15'"`` - comando a ser enviado para os dispositivos remotos.
 
-O resultado será assim:
-
-.. code:: json
-
-    $ ansible ansible_core -i hosts -c network_cli -e ansible_network_os=ios -u teste -k -m ios_config -a "commands='vlan 15'"
-    SSH password: 
-    
-    SW_CORE_2 | CHANGED => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python"
-    },
-    "banners": {},
-    "changed": true,
-    "commands": [
-        "vlan 15"
-    ],
-    "updates": [
-        "vlan 15"
-    ]
-}
-    SW_CORE_1 | CHANGED => {
-    "ansible_facts": {
-        "discovered_interpreter_python": "/usr/bin/python"
-    },
-    "banners": {},
-    "changed": true,
-    "commands": [
-        "vlan 15"
-    ],
-    "updates": [
-        "vlan 15"
-    ]
-}
+E o resultado da execução permanecerá na running-config dos dispositivos.
