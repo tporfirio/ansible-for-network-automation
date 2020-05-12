@@ -1,98 +1,149 @@
 Comandos Ad-Hoc
 ~~~~~~~~~~~~~~
 
-Ad-hoc команды - это возможность запустить какое-то действие Ansible из
-командной строки.
+Comandos Ansible Ad-Hoc é um meio mais rápido de fazer alguma tarefa ou verificar alguma configuração sem a necessidade de criar um playbook.
 
-Такой вариант используется, как правило, в тех случаях, когда надо
-что-то проверить, например, работу модуля. Или просто выполнить какое-то
-разовое действие, которое не нужно сохранять.
-В любом случае, это простой и быстрый способ начать использовать
-Ansible.
+Essa opção é usadas nos casos em que você precisa verificar algo, execute alguma ação única que não precise ser salva. De qualquer forma, esta é uma maneira fácil e rápida de começar a usar o Ansible.
 
-Сначала нужно создать в локальном каталоге инвентарный файл. Назовем его
-myhosts.ini:
+Primeiro, você precisa criar um arquivo de inventário no diretório de sua preferência ou poderá utilizar o arquivo armazenado no diretório padrão ``/etc/ansible/hosts``. Irei criar no diretório ``/home/thiago/Documentos/Code/Ansible/lab1/hosts``.  Vamos chamá-lo de hosts:
 
-::
+.. code:: ini
 
-    [cisco_routers]
-    192.168.100.1
-    192.168.100.2
-    192.168.100.3
+    [ansible_core]
+    SW_CORE_1
+    SW_CORE_2
+
+A primeiro momento, ao conectar-se aos dispsitivos remotos, é melhor conectar-se a eles manualmente, para que as chaves do dispositivo sejam salvas localmente. 
+
+Exemplo do comando Ad-Hoc:
+
+.. code:: bash
+
+    $ ansible SW_CORE_1 -m raw -a "show vlan brief" -u teste -k
+
+Vamos entender os parâmetros do comando acima: 
+
+* ``SW_CORE_1`` - dispositivo ao qual você deseja enviar ações. 
+
+  * Este dispositivo deve existir no arquivo hosts
+  * Pode ser um grupo, um nome ou endereço específico.
+  * Se você precisar especificar todos os hosts do arquivo, poderá usar o parâmetro "all".
+
+* ``-m`` - especifica o módulo de execução.
+* ``raw`` - parâmetro "módulo" de execução, este parâmetro deve ser seguido por algum comando à nível de usuário privilegiado independente de qual dispositivo de destino.
+* ``-u teste`` - usuário remoto utilizado para estabelecer a conexão SSH. 
+* ``-k`` - especifica a senha do usuário descrito no parâmetro anterior, a senha deve ser inserida após a execução do comando Ad-Hoc.
+
+O resultado dessa execução será assim:
+
+.. code:: bash
+
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible SW_CORE_1 -m raw -a "show vlan brief" -u teste -k
+    SSH password: 
+    SW_CORE_1 | CHANGED | rc=0 >>
 
 
-При подключении к устройствам первый раз, сначала лучше подключиться
-к ним вручную, чтобы ключи устройств были сохранены локально. В
-Ansible есть возможность отключить эту первоначальную проверку
-ключей. В разделе о конфигурационном файле мы посмотрим, как это
-делать (такой вариант может понадобиться, если надо подключаться к
-большому количеству устройств).
+    VLAN Name                             Status    Ports
+    ---- -------------------------------- --------- -------------------------------
+    1    default                          active    Et0/0, Et0/1, Et0/2, Et0/3
+                                                    Et1/0, Et1/1, Et1/2, Et1/3
+                                                    Et2/0, Et2/1, Et2/2, Et2/3
+    10   Vlan 10                          active    
+    20   Vlan 20                          active    
+    30   Vlan 30                          active    
+    40   Vlan 40                          active    
+    80   VLAN0080                         active    
+    90   VLAN 90                          active    
+    100  Vlan 100                         active    
+    110  Vlan 110                         active    
+    1002 fddi-default                     act/unsup 
+    1003 token-ring-default               act/unsup 
+    1004 fddinet-default                  act/unsup 
+    1005 trnet-default                    act/unsup Shared connection to sw_core_1 closed.  
 
-Пример ad-hoc команды:
+Tudo ocorreu bem e a saída do dispositivo foi exibida.
 
-::
+Iremos executar outros comandos e / ou em outras combinações de parâmetros.
 
-    $ ansible 192.168.100.1 -i myhosts.ini -c network_cli -e ansible_network_os=ios -u cisco -k -m ios_command -a "commands='sh clock'"
+Abaixo segue outro exemplo do Ad-Hoc em ação:
 
-Разберемся с параметрами команды: 
+.. code:: bash
 
-* ``192.168.100.1`` - устройство, к которому нужно применить действия 
+    $ ansible ansible_core -i ./hosts -m raw -a "show users" -u teste -k
 
-  * эта устройство должно существовать в инвентарном файле 
-  * это может быть группа, конкретное имя или адрес
-  * если нужно указать все хосты из файла, можно использовать значение all или *
-  * Ansible поддерживает более сложные варианты указания хостов, 
-    с регулярными выражениями и разными шаблонами. Подробнее об этом в
-    `документации <http://docs.ansible.com/ansible/devel/intro_patterns.html>`__
+Os valores acima irá executar o comando "show users" em todos os hosts do grupo "ansible_core" alocados dentro do arquivo "./hosts" e o parâmetro "-a" permite enviar argumentos para os dispositivos remotos.
 
-* ``-i myhosts.ini`` - параметр -i позволяет указать инвентарный файл 
-* ``-c network_cli`` - параметр -c позволяет указать тип подключения. Тип network_cli
-  подразумевает передачу команд через SSH имитируя человека
+O resultado dessa execução será assim:
 
-  * Для работы network_cli обязательно нужно указывать network_os, в данном случае,
-    это IOS ``-e ansible_network_os=ios``
+.. code:: bash
 
-* ``-u cisco`` - подключение выполняется от имени пользователя cisco 
-* ``-k`` - параметр, который нужно указать, чтобы аутентификация была по паролю, а не по ключам
-* ``-m ios_command`` - параметр указывает какой модуль используется
-* ``-a "commands='sh ip int br'"`` - параметр ``-a`` указывает, какую команду отправить 
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible ansible_core -i ./hosts -m raw -a "show users" -u             teste -k
+    SSH password: 
+    SW_CORE_1 | CHANGED | rc=0 >>
+        Line       User       Host(s)              Idle       Location
+    *  2 vty 0     teste      idle                 00:00:00 192.168.36.1
 
-.. note::
+      Interface    User               Mode         Idle     Peer Address
+    Shared connection to sw_core_1 closed.
 
-    Большинство параметров можно указать в интентарном файле или в файле переменных.
+    SW_CORE_2 | CHANGED | rc=0 >>
 
-Результат выполнения будет таким:
+        Line       User       Host(s)              Idle       Location
+    *  2 vty 0     teste      idle                 00:00:00 192.168.36.1
 
-::
+      Interface    User               Mode         Idle     Peer Address
+    Shared connection to sw_core_2 closed.
 
-    $ ansible 192.168.100.1 -i myhosts.ini -c network_cli -e ansible_network_os=ios -u cisco -k -m ios_command -a "commands='sh clock'"
+Mais um exemplo do do comando Ad-Hoc:
 
-.. figure:: https://raw.githubusercontent.com/natenka/PyNEng/master/images/15_ansible/1_ad-hoc.png
+.. code:: bash
 
-Теперь всё прошло успешно. Команда выполнилась, и отобразился вывод с устройства.
+    $ ansible ansible_core -i ./hosts -m raw -a "show run" -u teste -k | grep 'hostname\|username' > usernames.txt
 
-Аналогичным образом можно попробовать выполнять и другие команды и/или
-на других комбинациях устройств.
+Acima, definimos que irá ser executado o comando "show run" em todos os devices do grupo "ansible_core", porém, desejamos que apenas as linhas "hostname e username" sejam gravadas no txt "usernames.txt".
 
-Часть параметров можно записать в инвентарный файл и тогда их не нужно будет указывать в команде:
+O resultado dessa execução será assim:
 
-::
+.. code:: bash
 
-    [cisco_routers]
-    192.168.100.1
-    192.168.100.2
-    192.168.100.3
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ cat usernames.txt 
+    hostname SW_CORE_2
+    username teste privilege 15 password 0 teste
+    hostname SW_CORE_1
+    username teste privilege 15 password 0 teste
 
-    [cisco_routers:vars]
-    ansible_connection=network_cli
-    ansible_network_os=ios
-    ansible_user=cisco
-    ansible_password=cisco
+Um exemplo muito além e que irá nos ajudar a fazer outras combinações para lidar com os comandos Ad-Hoc, segue exemplo do comando abaixo:
 
-Теперь ad-hoc команду можно вызвать так:
+.. code:: bash
 
-::
+    $ ansible ansible_core -i hosts -c network_cli -e ansible_network_os=ios -u teste -k -m ios_config -a "commands='vlan 200'"
+    
+Vamos lidar com os principais parâmetros do comando:
 
-    $ ansible 192.168.100.1 -i myhosts.ini -m ios_command -a "commands='sh ip int br'"
+* ``ansible_core`` - grupo ao qual você deseja enviar ações.
+* ``-i hosts`` - arquivo hosts
+* ``-c network_cli`` - a opção -c permite especificar o tipo de conexão. O tipo network_cli se refere ao protocolo SSH sobre CLI.
+* ``-e ansible_network_os=ios`` - especifica o tipo de plataforma dos dispositivos do grupo ansbile_core.
+* ``-m ios_config`` - este comando permite especificar o tipo de módulo a ser utilizado.
+* ``"commands='<comando CLI>'"`` - comando a ser enviado para os dispositivos remotos.
 
-А результат выполнения остается тем же.
+O resultado será assim:
+
+.. code:: bash
+
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible ansible_core -i hosts -c network_cli -e                       ansible_network_os=ios -u teste -k -m ios_config -a "commands='vlan 200'"
+    SSH password: 
+    
+    SW_CORE_1 | SUCCESS => {
+        "ansible_facts": {
+            "discovered_interpreter_python": "/usr/bin/python"
+        },
+        "changed": false
+    }
+
+    SW_CORE_2 | SUCCESS => {
+        "ansible_facts": {
+            "discovered_interpreter_python": "/usr/bin/python"
+        },
+        "changed": false
+    }
