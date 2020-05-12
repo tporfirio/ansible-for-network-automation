@@ -5,7 +5,7 @@ A biblioteca de módulos é instalada junto ao Ansible. Os módulos são respons
 
 Por exemplo, já executamos comandos Ad-Hoc usando o módulo ios_command e passamos argumentos para ele. Agora, iremos definir como alocar parâmetros de configuração do módulo ios_vlan dentro de um arquivo de manual (playbook), segue exemplo descrito abaixo:
 
-::
+.. code::
     - name: Criando VLAN 15
       ios_vlan:
          - vlan_id: 15              
