@@ -1,48 +1,32 @@
 Módulos
 ==============
 
-Вместе с установкой Ansible устанавливается также большое количество
-модулей (библиотека модулей).
+A biblioteca de módulos é instalada junto ao Ansible. Os módulos são responsáveis pelas ações que o Ansible executa. Além disso, cada módulo é responsável por sua tarefa específica e pequena.
 
-Модули отвечают за действия, которые выполняет Ansible. При этом каждый
-модуль, как правило, отвечает за свою конкретную и небольшую задачу.
+Por exemplo, já executamos comandos Ad-Hoc usando o módulo ios_command e passamos argumentos para ele. Agora, iremos definir como alocar parâmetros de configuração do módulo ios_vlan dentro de um arquivo de manual (playbook), segue exemplo descrito abaixo:
 
-Модули можно выполнять отдельно, в ad-hoc командах или собирать в
-определенный сценарий (play), а затем в playbook.
+.. code:: yaml
+    - name: Criando VLAN 15
+      ios_vlan:
+         - vlan_id: 15              
+           name: VLAN 15          
+           state: active
+    
+Esses parâmetro irá criar a vlan 15 nomeá-la com o nome de VLAN 15. 
 
-Как правило, при вызове модуля ему нужно передать аргументы. Какие-то
-аргументы будут управлять поведением и параметрами модуля, а какие-то
-передавать, например, команду, которую надо выполнить.
+Caso você queira criar duas ou mais vlans nos hosts de destino, deverá escrever o playbook com os seguintes parâmetros:
 
-Например, мы уже выполняли ad-hoc команды, используя модуль ios_command, и
-передавали ему аргументы:
+.. code:: yaml
+    
+    - name: Criando VLANS 15 e 25
+      ios_vlan:
+        aggregate:
+          - vlan_id: 15             
+            name: VLAN 15          
+            state: active
 
-::
+          - vlan_id: 25              
+            name: VLAN 25          
+            state: active
 
-    $ ansible 192.168.100.1 -m ios_command -a "commands='sh ip int br'"
-
-Выполнение такой же задачи в playbook будет выглядеть так (playbook
-рассматривается в следующем разделе):
-
-::
-
-        - name: run sh ip int br        
-          ios_command:
-            commands: show ip int br
-
-После выполнения модуль возвращает результаты в формате JSON.
-
-Модули Ansible, как правило, идемпотентны. Это означает, что модуль
-можно выполнять сколько угодно раз, но при этом модуль будет выполнять
-изменения, только если система не находится в желаемом состоянии.
-
-В Ansible модули разделены на категории по тому кто их поддерживает: 
-
-* **core** - модули, которые поддерживает основная команда разработчиков Ansible. 
-* **network** - поддерживает Ansible Network Team.
-* **certified** - поддерживают партнеры Ansible
-* **community** - поддерживает сообщество Ansible
-
-Также в Ansible модули разделены по функциональности. Список всех
-категорий находится в
-`документации <https://docs.ansible.com/ansible/latest/modules/modules_by_category.html>`__.
+Para visualizar a lista de módulos suportados pelo Ansible, você pode verificar nessa `documentação <https://docs.ansible.com/ansible/latest/reference_appendices/config.html#common-options>`__.
