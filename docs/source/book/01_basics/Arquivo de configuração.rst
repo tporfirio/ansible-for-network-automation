@@ -19,4 +19,4 @@ Parâmetros do arquivo ``ansible.cfg``:
 
 .. note::
 
-    Percebe-se que o arquivo ``ansible.cfg`` contém valores simples, porém é o necessário para colocar nossos playbooks para rodar. Caso você deseja verificar uma lista completa dos parâmetros e suas descrições, você pode encontrar nessa `documentação <https://docs.ansible.com/ansible/latest/reference_appendices/config.html#common-options>`__.
+    Percebe-se que o arquivo ``ansible.cfg`` contém valores simples, porém é o necessário para colocar nossos playbooks para rodar. Caso você deseja verificar uma lista completa dos parâmetros e suas descrições, você pode encontrar nessa `documentação <https://docs.ansible.com/ansible/latest/modules/list_of_network_modules.html>`__.
