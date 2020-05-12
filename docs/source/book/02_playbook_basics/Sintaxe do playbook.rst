@@ -96,9 +96,9 @@ Depois de explicar os principais parâmetros dentro do playbook, iremos executar
 
 É assim que a execução do playbook se parece:
 
-.. code:: yaml
+.. code:: python
     
-    thiago@thiago-ThinkPad-T430:~/Documentos/Code/Ansible/lab1$ ansible-playbook playbook01.yml 
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible-playbook playbook01.yml 
 
     PLAY [Run show commands on routers] ************************************************************************************
 
