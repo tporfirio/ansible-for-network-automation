@@ -131,7 +131,7 @@ O resultado será assim:
 
 .. code:: bash
 
-    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible ansible_core -i hosts -c network_cli -e ansible_network_os=ios -u teste -k -m ios_config -a "commands='vlan 15'"
+    $ ansible ansible_core -i hosts -c network_cli -e ansible_network_os=ios -u teste -k -m ios_config -a "commands='vlan 15'"
     SSH password: 
     
     SW_CORE_2 | CHANGED => {
@@ -160,4 +160,3 @@ O resultado será assim:
         "vlan 15"
     ]
 }
-..
