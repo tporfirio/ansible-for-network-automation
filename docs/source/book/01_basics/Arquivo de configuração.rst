@@ -13,7 +13,7 @@ Primeiro, você precisa criar um arquivo de configuração no diretório de sua 
 Parâmetros do arquivo ``ansible.cfg``: 
 
 * ``[defaults]`` - se refere ao padrão de configurações gerais listadas nos valores abaixo.
-* ``inventory = ./hosts`` - definindo o arquivo de inventário a ser utilizado para alocar os dispositivos que queremo interagir.
+* ``inventory = ./hosts`` - definindo o arquivo de inventário a ser utilizado para alocar os dispositivos que queremos interagir.
 * ``host_key_checking = false`` - definindo o parâmetro false para definir que as chaves SSH não sejam trocadas ao iniciar a autenticação.
 * ``timeout = 5`` - tempo limite até a conexão ser autenticada.
 
