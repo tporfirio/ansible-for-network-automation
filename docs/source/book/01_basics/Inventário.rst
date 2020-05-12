@@ -8,7 +8,7 @@ Hosts e grupos
 
 No arquivo de inventário, os dispositivos podem ser especificados através dos endereços IP ou nomes. Os dispositivos podem ser especificados um de cada vez ou divididos em grupos.
 
-Hosts file - arquivo inventário de exemplo, pode ser escrito em INI ou em formato de YAML:
+Hosts file - arquivo inventário de exemplo, pode ser escrito em .INI, sem extensão ou em formato de YAML:
 
 .. code:: ini
 
