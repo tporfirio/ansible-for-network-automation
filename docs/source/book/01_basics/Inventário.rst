@@ -26,7 +26,7 @@ O nome indicado entre colchetes é o nome do grupo. Nesse caso, dois grupos de d
 
 .. note::
 
-    No arquivo hosts, o mesmo endereço IP ou nome (especificando o host) pode ser alocados em grupos diferentes.
+    No arquivo hosts, o mesmo endereço IP ou nome (especificando o host) pode ser alocado em grupos diferentes.
 
 Por padrão, o arquivo hosts é localizado em ``/etc/ansible/hosts``.
 
@@ -54,7 +54,7 @@ O Ansible também permite combinar grupos de dispositivos em um grupo comum. Uma
 Arquivo Linux ``/etc/hosts``
 ~~~~~~~~~~~~~~~~~~~
 
-Esse o arquivo hosts do linux, neste arquivo são armazenados dados dos hosts considerados locais. Ao preencher hostname e IP neste arquivo, meu host local irá conhecer esses hosts armazenados neste arquivo:
+Esse é o arquivo hosts do linux, neste arquivo são armazenados dados dos hosts considerados locais. Ao preencher hostname e IP neste arquivo, meu host local irá conhecer esses hosts remotos como locais, segue exemplo deste arquivo:
 
 .. code:: bash
 
