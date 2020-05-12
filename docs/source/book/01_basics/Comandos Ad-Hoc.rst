@@ -129,7 +129,7 @@ Vamos lidar com os principais parâmetros do comando:
 
 O resultado será assim:
 
-.. code:: bash
+.. code:: json
 
     $ ansible ansible_core -i hosts -c network_cli -e ansible_network_os=ios -u teste -k -m ios_config -a "commands='vlan 15'"
     SSH password: 
