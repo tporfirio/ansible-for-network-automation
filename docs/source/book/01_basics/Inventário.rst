@@ -1,98 +1,86 @@
 Inventário
 ----------------
 
-Инвентарный файл - это файл, в котором описываются устройства, к которым
-Ansible будет подключаться.
+Um arquivo de inventário é um arquivo que descreve os dispositivos aos quais o Ansible se conectará.
 
-Хосты и группы
+Hosts e grupos
 ~~~~~~~~~~~~~~
 
-В инвентарном файле устройства могут указываться используя IP-адреса или
-имена. Устройства могут быть указаны по одному или разбиты на группы.
+No arquivo de inventário, os dispositivos podem ser especificados através dos endereços IP ou nomes. Os dispositivos podem ser especificados um de cada vez ou divididos em grupos.
 
-Файл может быть описан в формате INI или YAML. Пример файла в формате INI:
-
-.. code:: ini
-
-    r5.example.com
-
-    [cisco_routers]
-    192.168.255.1
-    192.168.255.2
-    192.168.255.3
-    192.168.255.4
-
-    [cisco_edge_routers]
-    192.168.255.1
-    192.168.255.2
-
-Название, которое указано в квадратных скобках - это название группы. В
-данном случае, созданы две группы устройств: cisco_routers и
-cisco_edge_routers.
-
-Обратите внимание, что адреса 192.168.255.1 и 192.168.255.2 находятся в
-двух группах. Это нормальная ситуация, один и тот же адрес или имя
-хоста, можно помещать в разные группы.
-
-Таким образом можно применять отдельно какие-то политики для группы
-cisco_edge_routers, но в то же время, когда необходимо настроить что-то,
-что касается всех маршрутизаторов, можно использовать группу
-cisco_routers.
-
-К разбиению на группы надо подходить внимательно. Ansible это еще и, в
-какой-то мере, система описания инфраструктуры. Позже мы будем
-рассматривать групповые переменные и роли, где значение групп будет
-заметно в полной мере.
-
-По умолчанию, инвентарный файл находится в ``/etc/ansible/hosts``.
-
-При этом обычно лучше создавать свой инвентарный файл и использовать его. Для этого
-нужно, либо указать его при запуске ansible, используя опцию
-``-i <путь>``, либо указать файл в конфигурационном файле Ansible.
-
-
-Если в группу надо добавить несколько устройств с однотипными именами,
-можно использовать такой вариант записи:
+Hosts file - arquivo inventário de exemplo, pode ser escrito em INI ou em formato de YAML:
 
 .. code:: ini
 
-    [cisco_routers]
-    192.168.255.[1:5]
+    [ansible_core]
+    SW_CORE_1
+    SW_CORE_2
 
-Такая запись означает, что в группу попадут устройства с адресами
-192.168.255.1-192.168.255.5. Этот формат записи поддеживается и для имен
-хостов:
+    [ansible_access]
+    SW_ACCESS_1
+    SW_ACCESS_2
+    SW_ACCESS_3
+    SW_ACCESS_4
+    
+O nome indicado entre colchetes é o nome do grupo. Nesse caso, dois grupos de dispositivos são criados: ansible_core e ansible_access.
 
-.. code:: ini
+.. note::
 
-    [cisco_routers]
-    router[A:D].example.com
+    No arquivo hosts, o mesmo endereço IP ou nome (especificando o host) pode ser alocados em grupos diferentes.
 
-Группа из групп
-~~~~~~~~~~~~~~~
+Por padrão, o arquivo hosts é localizado em ``/etc/ansible/hosts``.
 
-Ansible также позволяет объединять группы устройств в общую группу. Для
-этого используется специальный синтаксис:
-
-.. code:: ini
-
-    [cisco_routers]
-    192.168.255.1
-    192.168.255.2
-    192.168.255.3
-
-    [cisco_switches]
-    192.168.254.1
-    192.168.254.2
-
-    [cisco_devices:children]
-    cisco_routers
-    cisco_switches
-
-Группы по-умолчанию
+Um grupo de grupos
 ~~~~~~~~~~~~~~~~~~~
 
-По-умолчанию, в Ansible существует две группы: all и ungrouped. Первая
-включает в себя все хосты, а вторая, соответственно, хосты, которые не
-принадлежат ни одной из групп.
+O Ansible também permite combinar grupos de dispositivos em um grupo comum. Uma sintaxe especial é usada para isso:
 
+.. code:: ini
+
+    [ansible_core]
+    SW_CORE_1
+    SW_CORE_2
+
+    [ansible_access]
+    SW_ACCESS_1
+    SW_ACCESS_2
+    SW_ACCESS_3
+    SW_ACCESS_4
+
+    [cisco_devices:children]
+    ansible_access
+    ansible_core
+
+Arquivo Linux ``/etc/hosts``
+~~~~~~~~~~~~~~~~~~~
+
+Esse o arquivo hosts do linux, neste arquivo são armazenados dados dos hosts considerados locais. Ao preencher hostname e IP neste arquivo, meu host local irá conhecer esses hosts armazenados neste arquivo:
+
+.. code:: bash
+
+    127.0.0.1	localhost
+    127.0.1.1	thiago-ThinkPad
+
+    # The following lines are desirable for IPv6 capable hosts
+    ::1     ip6-localhost ip6-loopback
+    fe00::0 ip6-localnet
+    ff00::0 ip6-mcastprefix
+    ff02::1 ip6-allnodes
+    ff02::2 ip6-allrouters
+
+    192.168.36.214 SW_CORE_1
+    192.168.36.215 SW_CORE_2
+
+    192.168.36.210 SW_ACCESS_1
+    192.168.36.211 SW_ACCESS_2
+    192.168.36.212 SW_ACCESS_3
+    192.168.36.213 SW_ACCESS_4
+
+    # LAB CAMPUS NETWORK
+
+    192.168.36.129 SW6_DISTR
+    192.168.36.130 SW5_DISTR
+    192.168.36.131 SW4_DISTR
+    192.168.36.132 SW3_DISTR
+    192.168.36.133 SW2_DISTR
+    192.168.36.134 SW1_DISTR
