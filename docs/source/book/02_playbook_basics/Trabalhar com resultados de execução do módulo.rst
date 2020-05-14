@@ -52,7 +52,7 @@ No playbook abaixo, usando o parâmetro **register**, a saída do comando do mó
 
 .. note::
     
-    Se você executar este manual, a saída não será diferente, pois a saída do comando é armazenada apenas na variável **print_output**. Para que possamos visualizar a saída impressa durante a execução do script, devemos alocar o módulo de debug.
+    Se você executar este manual, a saída não será diferente, pois, a saída do comando é armazenada apenas na variável **print_output**. Para que possamos visualizar a saída impressa durante a execução do script, devemos alocar o módulo de debug.
     
 debug
 ~~~~~
