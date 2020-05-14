@@ -1,181 +1,270 @@
 Trabalhar com resultados de execução do módulo
 ---------------------------------------
 
-В этом разделе рассматриваются несколько способов, которые позволяют
-посмотреть на вывод, полученный с устройств.
+Esta seção discute métodos que permitem imprimir a saída do comando executado nos dispositivos:
 
-Примеры используют модуль raw, но аналогичные принципы работают и с
-другими модулями.
-
-verbose
-~~~~~~~
-
-В предыдущих разделах один из способов отобразить результат выполнения
-команд уже использовался - флаг verbose.
-
-Конечно, вывод не очень удобно читать, но, как минимум, он позволяет
-увидеть, что команды выполнились. Также этот флаг позволяет подробно
-посмотреть, какие шаги выполняет Ansible.
-
-Пример запуска playbook с флагом verbose (вывод сокращен):
-
-::
-
-    ansible-playbook 1_show_commands_with_raw.yml -v
-
-.. figure:: https://raw.githubusercontent.com/natenka/PyNEng/master/images/15_ansible/playbook-verbose.png
-
-При увеличении количества букв v в флаге, вывод становится более
-подробным. Попробуйте вызывать этот же playbook и добавлять к флагу
-буквы v (5 и больше показывают одинаковый вывод) таким образом:
-
-::
-
-    ansible-playbook 1_show_commands_with_raw.yml -vvv
-
-В выводе видны результаты выполнения задачи, они возвращаются в формате
-JSON: 
-
-* **changed** - ключ, который указывает, были ли внесены изменения 
-* **stdout** - вывод команды 
-* **stdout_lines** - вывод в виде списка команд, разбитых построчно
+* register 
+* debug
+* when
 
 register
-~~~~~~~~
+~~~~~~~
 
-Параметр **register** сохраняет результат выполнения модуля в
-переменную. Затем эта переменная может использоваться в шаблонах, в
-принятии решений о ходе сценария или для отображения вывода.
+O parâmetro **register** salva o resultado da execução de um ou mais comandos ou um módulo de configuração específica e armazena em uma variável. Essa variável pode ser usada para exibir a saída do comando durante o andamento de execução do playbook.
 
-Попробуем сохранить результат выполнения команды.
+No playbook abaixo, usando o parâmetro **register**, a saída do comando do módulo de configuração de vlan é salva na variável **print_output**:
 
-В playbook 2_register_vars.yml с помощью register вывод команды sh ip
-int br сохранен в переменную sh_ip_int_br_result:
-
-::
-
+.. code:: yaml
+    
     ---
-
-    - name: Run show commands on routers
-      hosts: 192.168.100.1
+    
+    - name: VLANS
+      hosts: all
       gather_facts: false
-
+      
+      vars:
+        ansible_connection: network_cli
+        ansible_network_os: ios
+        ansible_user: teste
+        ansible_ssh_pass: teste
+      
       tasks:
+        - name: Criando Vlans
+          ios_vlan:
+            aggregate:
+              - vlan_id: 10              
+                name: VLAN 10          
+                state: active
 
-        - name: run sh ip int br
-          ios_command:
-            commands: sh ip int br
-          register: sh_ip_int_br_result
+              - vlan_id: 20              
+                name: VLAN 20          
+                state: active 
 
+              - vlan_id: 30              
+                name: VLAN 30          
+                state: active
 
-Если запустить этот playbook, вывод не будет отличаться, так как вывод
-только записан в переменную, но с переменной не выполняется никаких
-действий. Следующий шаг - отобразить результат выполнения команды с
-помощью модуля debug.
+              - vlan_id: 40              
+                name: VLAN 40          
+                state: active          
 
+          register: print_output
+
+.. note::
+    
+    Se você executar este manual, a saída não será diferente, pois a saída do comando é armazenada apenas na variável **print_output**. Para que possamos visualizar a saída impressa durante a execução do script, devemos alocar o módulo de debug.
+    
 debug
 ~~~~~
 
-Модуль debug позволяет отображать информацию на стандартный поток
-вывода. Это может быть произвольная строка, переменная, факты об
-устройстве.
+Este módulo imprime os comandos executados e armazanados dentro do módulo **register** e imprime a saída do comando durante a execução do playbook.
 
-Для отображения сохраненных результатов выполнения команды, в playbook
-2_register_vars.yml добавлена задача с модулем debug:
+Abaixo está um exemplo de como alocar o módulo **debug** dentro do playbook:
 
-::
-
+.. code:: yaml
+    
     ---
-
-    - name: Run show commands on routers
-      hosts: 192.168.100.1
+    
+    - name: VLANS
+      hosts: all
       gather_facts: false
+      
+      vars:
+        ansible_connection: network_cli
+        ansible_network_os: ios
+        ansible_user: teste
+        ansible_ssh_pass: teste
+      
+      tasks:
+        - name: Criando Vlans
+          ios_vlan:
+            aggregate:
+              - vlan_id: 10              
+                name: VLAN 10          
+                state: active
+
+              - vlan_id: 20              
+                name: VLAN 20          
+                state: active 
+
+              - vlan_id: 30              
+                name: VLAN 30          
+                state: active
+
+              - vlan_id: 40              
+                name: VLAN 40          
+                state: active          
+
+          register: print_output
+       
+        - debug: var=print_output.stdout_lines
+
+A variável **print_output** mostra a saída do comando em formato JSON.
+    
+O resultado da execução do manual acima se parece com o seguinte:
+
+.. code:: json
+
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible-playbook vlan.yml 
+
+    PLAY [VLANS] ***********************************************************************************************************
+
+    TASK [Criando Vlans] ***************************************************************************************************
+    changed: [SW_CORE_1]
+    changed: [SW_CORE_2]
+
+    TASK [debug] ***********************************************************************************************************
+    ok: [SW_CORE_1] => {
+        "print_output": {
+            "ansible_facts": {
+                "discovered_interpreter_python": "/usr/bin/python"
+            },
+            "changed": true,
+            "commands": [
+                "vlan 10",
+                "name Vlan 10",
+                "state active",
+                "vlan 20",
+                "name Vlan 20",
+                "state active",
+                "vlan 30",
+                "name Vlan 30",
+                "state active",
+                "vlan 40",
+                "name Vlan 40",
+                "state active"
+            ],
+            "deprecations": [
+                {
+                    "msg": "Distribution Ubuntu 18.04 on host SW_CORE_1 should use /usr/bin/python3, but is using /usr/bin/python for backward compatibility with prior Ansible releases. A future Ansible release will default to using the discovered platform python for this host. See https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information",
+                    "version": "2.12"
+                }
+            ],
+            "failed": false,
+            "warnings": [
+                "The value 10 (type int) in a string field was converted to '10' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change.",
+                "The value 20 (type int) in a string field was converted to '20' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change.",
+                "The value 30 (type int) in a string field was converted to '30' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change.",
+                "The value 40 (type int) in a string field was converted to '40' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change."
+            ]
+        }
+    }
+    ok: [SW_CORE_2] => {
+        "print_output": {
+            "ansible_facts": {
+                "discovered_interpreter_python": "/usr/bin/python"
+            },
+            "changed": true,
+            "commands": [
+                "vlan 10",
+                "name Vlan 10",
+                "state active",
+                "vlan 20",
+                "name Vlan 20",
+                "state active",
+                "vlan 30",
+                "name Vlan 30",
+                "state active",
+                "vlan 40",
+                "name Vlan 40",
+                "state active"
+            ],
+            "deprecations": [
+                {
+                    "msg": "Distribution Ubuntu 18.04 on host SW_CORE_2 should use /usr/bin/python3, but is using /usr/bin/python for backward compatibility with prior Ansible releases. A future Ansible release will default to using the discovered platform python for this host. See https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information",
+                    "version": "2.12"
+                }
+            ],
+            "failed": false,
+            "warnings": [
+                "The value 10 (type int) in a string field was converted to '10' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change.",
+                "The value 20 (type int) in a string field was converted to '20' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change.",
+                "The value 30 (type int) in a string field was converted to '30' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change.",
+                "The value 40 (type int) in a string field was converted to '40' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change."
+            ]
+        }
+    }
+
+    PLAY RECAP *************************************************************************************************************
+    SW_CORE_1                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    SW_CORE_2                  : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+when
+~~~~
+
+O uso do parâmetro **when** permite especificar a condição sob a qual a tarefa é executada. Se a condição não for atendida, a tarefa será ignorada.
+
+Segue um exemplo de onde alocar o parâmetro **when**:
+
+.. code::
+    
+    ---
+    
+    - name: SHOW RUN
+      hosts: ansible_core
+      gather_facts: false
+
+      vars: # Variável de conexão
+        ansible_connection: network_cli
+        ansible_network_os: ios
+        ansible_user: teste
+        ansible_ssh_pass: teste
 
       tasks:
 
-        - name: run sh ip int br
+        - name: sh run
           ios_command:
-            commands: sh ip int br
-          register: sh_ip_int_br_result
+            commands: sh run
+          register: sh_run
 
         - name: Debug registered var
-          debug: var=sh_ip_int_br_result.stdout_lines
+          debug: 
+            msg: "task executada"
+          when: "'sbrurbles' not in sh_run.stdout[0]"
 
-Обратите внимание, что выводится не всё содержимое переменной
-sh_ip_int_br_result, а только содержимое stdout_lines. В
-sh_ip_int_br_result.stdout_lines находится список строк, поэтому
-вывод будет структурирован.
+Ao executar o playbook acima, tivemos o seguinte retorno:
 
-Результат запуска playbook выглядит так:
+.. code::
+    
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible-playbook when.yml
 
-::
+    PLAY [SHOW RUN] ********************************************************************************************************
 
-    $ ansible-playbook 2_register_vars.yml
+    TASK [sh run] **********************************************************************************************************
+    ok: [SW_CORE_2]
+    ok: [SW_CORE_1]
 
-.. figure:: https://raw.githubusercontent.com/natenka/PyNEng/master/images/15_ansible/2_register_vars.png
+    TASK [Debug registered var] ********************************************************************************************
+    skipping: [SW_CORE_2]
+    skipping: [SW_CORE_1]
 
-register, debug, when
-~~~~~~~~~~~~~~~~~~~~~
+    PLAY RECAP *************************************************************************************************************
+    SW_CORE_1                  : ok=1    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+    SW_CORE_2                  : ok=1    changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
 
-С помощью ключевого слова **when** можно указать условие, при выполнении
-которого задача выполняется. Если условие не выполняется, то задача
-пропускается.
+Percebe-se que tivemos o valor **skipping** impresso durante a execução do playbook, isso significa que a tarefa não foi concluída por que a condição **when** não foi atendida.
 
-.. note::
+Ao excluir o parâmetro **when**, iremos ter a execução da task. Segue a execução do playbook novamente:
 
-    when в Ansible используется, как if в Python.
+.. code::
 
-Пример playbook 3_register_debug_when.yml:
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible-playbook when.yml
 
-::
+    PLAY [SHOW RUN] ********************************************************************************************************
 
-    ---
+    TASK [sh run] **********************************************************************************************************
+    ok: [SW_CORE_2]
+    ok: [SW_CORE_1]
 
-    - name: Run show commands on routers
-      hosts: 192.168.100.1
-      gather_facts: false
+    TASK [Debug registered var] ********************************************************************************************
+    ok: [SW_CORE_1] => {
+        "msg": "task executada"
+    }
+    ok: [SW_CORE_2] => {
+        "msg": "task executada"
+    }
 
-      tasks:
-
-        - name: run sh ip int br
-          ios_command:
-            commands: sh ip int br
-          register: sh_ip_int_br_result
-
-        - name: Debug registered var
-          debug:
-            msg: "IP адрес не найден"
-          when: "'4.4.4.4' not in sh_ip_int_br_result.stdout[0]"
-
-
-В последнем задании несколько изменений: 
-
-* модуль debug отображает не содержимое сохраненной переменной, 
-  а сообщение, которое указано в переменной msg. 
-* условие when указывает, что данная задача выполнится
-  только при выполнении условия 
-* ``when: "'4.4.4.4' not in sh_ip_int_br_result.stdout[0]"`` - это условие
-  означает, что задача будет выполнена только в том случае, если в выводе
-  sh_ip_int_br_result.stdout будет найдена строка 4.4.4.4 
-
-
-Выполнение playbook:
-
-::
-
-    $ ansible-playbook 3_register_debug_when.yml
-
-.. figure:: https://raw.githubusercontent.com/natenka/PyNEng/master/images/15_ansible/3_register_debug_when_skip.png
-
-Обратите внимание на сообщения skipping - это означает, что задача не
-выполнялась для указанных устройств. Не выполнилась она потому, что
-условие в when не было выполнено.
-
-Выполнение того же playbook, но после удаления адреса на устройстве:
-
-::
-
-    $ ansible-playbook 3_register_debug_when.yml
-
-.. figure:: https://raw.githubusercontent.com/natenka/PyNEng/master/images/15_ansible/3_register_debug_when.png
-
+    PLAY RECAP (************************************************************************************************************
+    SW_CORE_1                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    SW_CORE_2                  : ok=2    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+      
