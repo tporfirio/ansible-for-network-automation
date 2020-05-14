@@ -7,9 +7,9 @@
 2. Noções básicas de playbooks
 ===================
 
-Playbook (arquivo de script) é um arquivo que descreve as ações que precisam ser executadas em um grupo de hosts.
+Playbook (arquivo de script) é um arquivo que descreve as ações que precisam ser executadas em um determinado hosts ou um grupo de hosts.
 
-Principais parâmetros alocadas dentro do playbook: 
+Principais parâmetros alocados dentro do playbook: 
 
 * hosts - neste parâmetro deverá inserir um host em específico ou um grupo de hosts no qual você deseja enviar tarefas. 
 * task - é baseada em módulos, ao especificar o módulo, deverá inserir os parâmetros complimentares que fazem parte do módulo escolhido para trabalhar.
