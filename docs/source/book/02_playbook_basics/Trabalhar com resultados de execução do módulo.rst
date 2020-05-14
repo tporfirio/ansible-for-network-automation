@@ -136,16 +136,24 @@ O resultado da execução do manual acima se parece com o seguinte:
             ],
             "deprecations": [
                 {
-                    "msg": "Distribution Ubuntu 18.04 on host SW_CORE_1 should use /usr/bin/python3, but is using /usr/bin/python for backward compatibility with prior Ansible releases. A future Ansible release will default to using the discovered platform python for this host. See https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more information",
+                    "msg": "Distribution Ubuntu 18.04 on host SW_CORE_1 should use /usr/bin/python3, but is using
+                    /usr/bin/python for backward compatibility with prior Ansible releases. A future Ansible release
+                    will default to using the discovered platform python for this host. See
+                    https://docs.ansible.com/ansible/2.9/reference_appendices/interpreter_discovery.html for more
+                    information",
                     "version": "2.12"
                 }
             ],
             "failed": false,
             "warnings": [
-                "The value 10 (type int) in a string field was converted to '10' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change.",
-                "The value 20 (type int) in a string field was converted to '20' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change.",
-                "The value 30 (type int) in a string field was converted to '30' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change.",
-                "The value 40 (type int) in a string field was converted to '40' (type string). If this does not look like what you expect, quote the entire value to ensure it does not change."
+                "The value 10 (type int) in a string field was converted to '10' (type string). If this does not look 
+                like what you expect, quote the entire value to ensure it does not change.",
+                "The value 20 (type int) in a string field was converted to '20' (type string). If this does not look 
+                like what you expect, quote the entire value to ensure it does not change.",
+                "The value 30 (type int) in a string field was converted to '30' (type string). If this does not look 
+                like what you expect, quote the entire value to ensure it does not change.",
+                "The value 40 (type int) in a string field was converted to '40' (type string). If this does not look 
+                like what you expect, quote the entire value to ensure it does not change."
             ]
         }
     }
