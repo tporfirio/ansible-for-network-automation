@@ -4,37 +4,22 @@
 
 .. _ansible_for_network_index:
 
-3. Сетевые модули привязанные к конкретной ОС
-=============================================
+3. Módulos de rede vinculados a um SO específico 
+================================================
 
-В этом разделе рассматриваются модули, которые работают с сетевым
-оборудованием через CLI. Глобально модули для работы с сетевым оборудованием можно разделить на
-две части: 
+Esta seção discute os módulos que funcionam com equipamentos de rede por meio da CLI. Para equipamentos que funcionam apenas através da CLI, o Ansible suporta três tipos de módulos que são os módulos principais para começar a se trabalhar com o Ansible:
 
-* модули для оборудования с поддержкой API 
-* модули для оборудования, которое работает только через CLI
+* os_command - executa comandos show.
+* os_facts - coleta fatos sobre dispositivos.
+* os_config - executa comandos de configuração.
 
-Если оборудование поддерживает API, как, например,
-`NXOS <https://docs.ansible.com/ansible/latest/modules/list_of_network_modules.html#nxos>`__,
-то для него создано большое количество модулей, которые выполняют
-конкретные действия по настройке функционала (например, для NXOS создано
-более 60 модулей).
-
-Для оборудования, которое работает только через CLI, Ansible
-поддерживает, как минимум, такие три типа модулей: 
-
-* os_command - выполняет команды show 
-* os_facts - собирает факты об устройствах 
-* os_config - выполняет команды конфигурации
-
-Соответственно, для разных операционных систем будут разные модули.
-Например, для Cisco IOS модули будут называться: 
+Assim, para diferentes sistemas operacionais, haverá diferentes módulos. Por exemplo, para os módulos do Cisco IOS serão chamados:
 
 * ios_command 
 * ios_config 
 * ios_facts
 
-Аналогичные три модуля доступны для таких ОС: 
+Módulos semelhantes aos de cima estão disponíveis para os seguintes SO: 
 
 * Dellos10 
 * Dellos6 
@@ -46,17 +31,13 @@
 * SR OS 
 * VyOS
 
-Полный список всех сетевых модулей, которые поддерживает Ansible, в
-`документации <http://docs.ansible.com/ansible/latest/modules/list_of_network_modules.html>`__.
+Uma lista completa de todos os módulos de rede suportados pelo Ansible você encontra `aqui <http://docs.ansible.com/ansible/latest/modules/list_of_network_modules.html>`__.
 
-Обратите внимание, что Ansible очень активно развивается в сторону
-поддержки работы с сетевым оборудованием, и в следующей версии Ansible,
-могут быть дополнительные модули. Поэтому, если на момент чтения книги
-уже есть следующая версия Ansible (версия в книги 2.9), используйте её и
-посмотрите в документации, какие новые возможности и модули появились.
+.. note::
+     
+    O Ansible está se desenvolvendo ativamente para dar suporte ao trabalho com equipamentos de rede e, na próxima versão do Ansible, pode haver módulos adicionais. Portanto, se no momento da leitura do livro já existe a próxima versão do Ansible (versão no livro 2.9), use-a e verifique na documentação quais novos recursos e módulos apareceram.
 
-В этом разделе все рассматривается на примере модулей для работы с Cisco
-IOS: 
+Esta seção discute exemplos de módulos para trabalhar com o Cisco IOS:
 
 * ios_command 
 * ios_config 
@@ -64,12 +45,7 @@ IOS:
 
 .. note::
 
-    Аналогичные модули command, config и facts для других вендоров и ОС
-    работают одинаково, поэтому, если разобраться, как работать с
-    модулями для IOS, с остальными всё будет аналогично.
-
-Кроме того, рассматривается модуль ntc-ansible, который не входит в core
-модули Ansible.
+    Se você examinar como trabalhar com módulos para IOS, tudo será o mesmo com outros vendors.
 
 .. toctree::
    :maxdepth: 1
@@ -77,4 +53,3 @@ IOS:
    ios_command
    ios_facts
    ios_config
-   further_reading
