@@ -1,9 +1,7 @@
-Модуль ios_facts
------------------
+Мódulo ios_facts
+----------------
 
-Модуль ios_facts собирает информацию с устройств под управлением IOS.
-
-Информация берется из таких команд: 
+O módulo ios_facts coleta informações de dispositivos executando o iOS. As informações são obtidas dos seguintes comandos:
 
 * dir 
 * show version 
@@ -14,95 +12,56 @@
 * show lldp neighbors detail 
 * show running-config
 
-.. note::
+Colete todos os fatos:
 
-    Чтобы видеть, какие команды Ansible выполняет на оборудовании, можно
-    настроить `EEM
-    applet <http://xgu.ru/wiki/EEM#.D0.9F.D1.80.D0.B8.D0.BC.D0.B5.D1.80.D1.8B_.D1.81.D0.BE.D0.B1.D1.8B.D1.82.D0.B8.D1.8F_cli>`__,
-    который будет генерировать лог сообщения о выполненных командах.
-
-В модуле можно указывать, какие параметры собирать - можно собирать всю
-информацию, а можно только подмножество. По умолчанию модуль собирает
-всю информацию, кроме конфигурационного файла.
-
-Какую информацию собирать, указывается в параметре **gather_subset**.
-Поддерживаются такие варианты (указаны также команды, которые будут
-выполняться на устройстве): 
-
-* **all** 
-* **hardware** 
-
-  * dir 
-  * show version 
-  * show memory statistics 
-
-* **config** 
-
-  * show version 
-  * show running-config 
-
-* **interfaces** 
-
-  * dir 
-  * show version 
-  * show interfaces 
-  * show ip interface 
-  * show ipv6 interface 
-  * show lldp 
-  * show lldp neighbors detail
-
-Собрать все факты:
-
-::
+.. code::
 
     - ios_facts:
         gather_subset: all
 
-Собрать только подмножество interfaces:
+Crie apenas um subconjunto de interfaces, ou seja, mostra apenas fatos das interfaces:
 
-::
+.. code::
 
     - ios_facts:
         gather_subset:
           - interfaces
 
-Собрать всё, кроме hardware:
+Colete tudo, exceto o hardware:
 
-::
+.. code::
 
     - ios_facts:
         gather_subset:
           - "!hardware"
 
-Ansible собирает такие факты: 
+O Ansible pode coletar os seguintes fatos:
 
-* ansible_net_all_ipv4_addresses - список IPv4 адресов на устройстве 
-* ansible_net_all_ipv6_addresses - список IPv6 адресов на устройстве 
-* ansible_net_config - конфигурация (для Cisco sh run) 
-* ansible_net_filesystems - файловая система устройства 
-* ansible_net_gather_subset - какая информация собирается (hardware, default, interfaces, config) 
-* ansible_net_hostname - имя устройства 
-* ansible_net_image - имя и путь ОС 
-* ansible_net_interfaces - словарь со всеми интерфейсами
-  устройства. Имена интерфейсов - ключи, а данные - параметры каждого интерфейса 
-* ansible_net_memfree_mb - сколько свободной памяти на устройстве 
-* ansible_net_memtotal_mb - сколько памяти на устройстве
-* ansible_net_model - модель устройства 
-* ansible_net_serialnum - серийный номер 
-* ansible_net_version - версия IOS
+* **ansible_net_all_ipv4_addresses** - lista de endereços IPv4 no dispositivo.
+* **ansible_net_all_ipv6_addresses** - lista de endereços IPv6 no dispositivo.
+* **ansible_net_config** - configuração (para execução Cisco sh run).
+* **ansible_net_filesystems** - sistema de arquivos do dispositivo.
+* **ansible_net_gather_subset** -quais informações são coletadas (hardware, padrão, interfaces, configuração).
+* **ansible_net_hostname** - nome do dispositivo.
+* **ansible_net_image** - nome e caminho do SO.
+* **ansible_net_interfaces** - um dicionário com todas as interfaces de dispositivos. Os nomes de interface são chaves e os dados são parâmetros de cada interface.
+* **ansible_net_memfree_mb** - quantidade de memória livre no dispositivo.
+* **ansible_net_memtotal_mb** - quanta memória há no dispositivo
+* **ansible_net_model** - modelo do dispositivo 
+* **ansible_net_serialnum** - número de série
+* **ansible_net_version** - versão do IOS
 
-Использование модуля
-~~~~~~~~~~~~~~~~~~~~
+Exemplo de uso do módulo ios_facts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Пример playbook 1_ios_facts.yml с использованием модуля ios_facts
-(собираются все факты):
+No playbook descrito abaixo, todos os fatos serão mostrados ao executar o playbook:
 
-::
+.. code:: yaml
 
     ---
 
     - name: Collect IOS facts
-      hosts: cisco-routers
+      hosts: SW_ACCESS_1
 
       tasks:
 
@@ -110,34 +69,56 @@ Ansible собирает такие факты:
           ios_facts:
             gather_subset: all
 
-::
+Ao executar o playbook acima, tivemos o seguinte retorno:
 
-    $ ansible-playbook 1_ios_facts.yml
+.. code:: bash
+    
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible-playbook facts.yml 
 
-.. figure:: https://raw.githubusercontent.com/natenka/PyNEng/master/images/15_ansible/5_ios_facts.png
+    PLAY [Collect IOS facts] *********************************************************************************************
 
-Для того, чтобы посмотреть, какие именно факты собираются с устройства,
-можно добавить флаг -v (информация сокращена):
+    TASK [Facts] ***********************************************************************************************************
+    ok: [SW_CORE_1]
+    ok: [SW_CORE_2]
 
-::
+    PLAY RECAP *************************************************************************************************************
+    SW_CORE_1                  : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    SW_CORE_2                  : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    
+Para ver exatamente quais fatos são coletados no dispositivo, você pode adicionar o parãmetro ``-v``, as informações serão impressa de forma resumida:
 
-    $ ansible-playbook 1_ios_facts.yml -v
-    Using /home/nata/pyneng_course/chapter15/ansible.cfg as config file
+.. code::
+    
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible-playbook facts.yml -v
+    Using /home/thiago/Documentos/Code/Ansible/lab1/ansible.cfg as config file
 
-.. figure:: https://raw.githubusercontent.com/natenka/PyNEng/master/images/15_ansible/5_ios_facts_verbose.png
+    PLAY [Collect IOS facts] ***********************************************************************************************
 
-После того, как Ansible собрал факты с устройства, все факты доступны
-как переменные в playbook, шаблонах и т.д.
+    TASK [Facts] ***********************************************************************************************************
+    [WARNING]: default value for `gather_subset` will be changed to `min` from `!config` v2.11 onwards
+    ok: [SW_CORE_1] => {"ansible_facts": {"ansible_net_all_ipv4_addresses": ["192.168.36.214"], "ansible_net_all_ipv6_addresses": [], "ansible_net_api": "cliconf", "ansible_net_config": "!\n! Last configuration change at 18:58:25 EET Thu May 14 2020\n!\nversion 15.2\nservice timestamps debug datetime msec\nservice timestamps log datetime msec\nno service password-encryption\nservice compress-config\n!\nhostname SW_CORE_1\n!\nboot-start-marker\nboot-end-marker\n!\n!\n!\nusername teste privilege 15 password 0 teste\nno aaa new-model\nclock timezone EET 2 0\n!\n!\n!\n!\n!\nvtp domain ansible\nvtp mode transparent\n!\n!\n!\nip domain-name ansible\nip cef\nno ipv6 cef\n!\n!\n!\nspanning-tree mode rapid-pvst\nspanning-tree extend system-id\n!\nvlan internal allocation policy ascending\n!\nvlan 10\n name VLAN 10\n!\nvlan 15 \n!\nvlan 20\n name VLAN 20\n!\nvlan 30\n name VLAN 30\n!\nvlan 40\n name VLAN 40\n!\nvlan 50\n name thiago\n!\nvlan 80 \n!\nvlan 90\n name VLAN 90\n!\nvlan 100\n name Vlan 100\n!\nvlan 110\n name Vlan 110\n!\nvlan 150,200 \n!\n! \n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\ninterface Ethernet0/0\n!\ninterface Ethernet0/1\n!\ninterface Ethernet0/2\n!\ninterface Ethernet0/3\n!\ninterface Ethernet1/0\n!\ninterface Ethernet1/1\n!\ninterface Ethernet1/2\n!\ninterface Ethernet1/3\n!\ninterface Ethernet2/0\n!\ninterface Ethernet2/1\n!\ninterface Ethernet2/2\n!\ninterface Ethernet2/3\n!\ninterface Vlan1\n ip address 192.168.36.214 255.255.255.0\n!\nip forward-protocol nd\n!\nno ip http server\nno ip http secure-server\n!\n!\n!\n!\n!\n!\ncontrol-plane\n!\n!\nline con 0\n logging synchronous\nline aux 0\nline vty 0 4\n login local\n transport input ssh\n!\n!\nend", "ansible_net_filesystems": ["unix:"], "ansible_net_filesystems_info": {"unix:": {"spacefree_kb": 2097148.0, "spacetotal_kb": 2097148.0}}, "ansible_net_gather_network_resources": [], "ansible_net_gather_subset": ["interfaces", "config", "hardware", "default"], "ansible_net_hostname": "SW_CORE_1", "ansible_net_image": "unix:/opt/unetlab/addons/iol/bin/L2-ADVENTERPRISEK9-M-15.2-IRON-20151", "ansible_net_interfaces": {"Ethernet0/0": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6000", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet0/1": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6010", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet0/2": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6020", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet0/3": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6030", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet1/0": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6001", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet1/1": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6011", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet1/2": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6021", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet1/3": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6031", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet2/0": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6002", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet2/1": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6012", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet2/2": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6022", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet2/3": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.6032", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Vlan1": {"bandwidth": 1000000, "description": null, "duplex": null, "ipv4": [{"address": "192.168.36.214", "subnet": "24"}], "lineprotocol": "up", "macaddress": "aabb.cc80.6000", "mediatype": null, "mtu": 1500, "operstatus": "up", "type": "Ethernet SVI"}}, "ansible_net_iostype": "IOS", "ansible_net_memfree_mb": 848213.8203125, "ansible_net_memtotal_mb": 934130.734375, "ansible_net_neighbors": {"Ethernet0/0": [{"host": "SW_ACCESS_1.ansible", "port": "Ethernet1/0"}]}, "ansible_net_python_version": "3.6.9", "ansible_net_serialnum": "67108960", "ansible_net_system": "ios", "ansible_net_version": "15.2(CML_NIGHTLY_20151103)FLO_DSGS7", "ansible_network_resources": {},     "discovered_interpreter_python": "/usr/bin/python"}, "changed": false}
+    ok: [SW_CORE_2] => {"ansible_facts": {"ansible_net_all_ipv4_addresses": ["192.168.36.215"], "ansible_net_all_ipv6_addresses": [], "ansible_net_api": "cliconf", "ansible_net_config": "!\n! Last configuration change at 18:58:25 EET Thu May 14 2020\n!\nversion 15.2\nservice timestamps debug datetime msec\nservice timestamps log datetime msec\nno service password-encryption\nservice compress-config\n!\nhostname SW_CORE_2\n!\nboot-start-marker\nboot-end-marker\n!\n!\n!\nusername teste privilege 15 password 0 teste\nno aaa new-model\nclock timezone EET 2 0\n!\n!\n!\n!\n!\nvtp domain ansible\nvtp mode transparent\n!\n!\n!\nip domain-name ansible\nip cef\nno ipv6 cef\n!\n!\n!\nspanning-tree mode rapid-pvst\nspanning-tree extend system-id\n!\nvlan internal allocation policy ascending\n!\nvlan 10\n name VLAN 10\n!\nvlan 15 \n!\nvlan 20\n name VLAN 20\n!\nvlan 30\n name VLAN 30\n!\nvlan 40\n name VLAN 40\n!\nvlan 50\n name thiago\n!\nvlan 80\n name VLAN 80\n!\nvlan 90\n name VLAN 90\n!\nvlan 100\n name Vlan 100\n!\nvlan 110\n name Vlan 110\n!\nvlan 150,200 \n!\n! \n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\n!\ninterface Ethernet0/0\n!\ninterface Ethernet0/1\n!\ninterface Ethernet0/2\n!\ninterface Ethernet0/3\n!\ninterface Ethernet1/0\n!\ninterface Ethernet1/1\n!\ninterface Ethernet1/2\n!\ninterface Ethernet1/3\n!\ninterface Ethernet2/0\n!\ninterface Ethernet2/1\n!\ninterface Ethernet2/2\n!\ninterface Ethernet2/3\n!\ninterface Vlan1\n ip address 192.168.36.215 255.255.255.0\n!\nip forward-protocol nd\n!\nno ip http server\nno ip http secure-server\n!\n!\n!\n!\n!\n!\ncontrol-plane\n!\n!\nline con 0\n logging synchronous\nline aux 0\nline vty 0 4\n login local\n transport input ssh\n!\n!\nend", "ansible_net_filesystems": ["unix:"], "ansible_net_filesystems_info": {"unix:": {"spacefree_kb": 2097148.0, "spacetotal_kb": 2097148.0}}, "ansible_net_gather_network_resources": [], "ansible_net_gather_subset": ["interfaces", "default", "hardware", "config"], "ansible_net_hostname": "SW_CORE_2", "ansible_net_image": "unix:/opt/unetlab/addons/iol/bin/L2-ADVENTERPRISEK9-M-15.2-IRON-20151", "ansible_net_interfaces": {"Ethernet0/0": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7000", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet0/1": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7010", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet0/2": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7020", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet0/3": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7030", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet1/0": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7001", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet1/1": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7011", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet1/2": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7021", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet1/3": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7031", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet2/0": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7002", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet2/1": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7012", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet2/2": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7022", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Ethernet2/3": {"bandwidth": 10000, "description": null, "duplex": null, "ipv4": [], "lineprotocol": null, "macaddress": "aabb.cc00.7032", "mediatype": "unknown", "mtu": 1500, "operstatus": "up", "type": "AmdP2"}, "Vlan1": {"bandwidth": 1000000, "description": null, "duplex": null, "ipv4": [{"address": "192.168.36.215", "subnet": "24"}], "lineprotocol": "up", "macaddress": "aabb.cc80.7000", "mediatype": null, "mtu": 1500, "operstatus": "up", "type": "Ethernet SVI"}}, "ansible_net_iostype": "IOS", "ansible_net_memfree_mb": 848213.8203125, "ansible_net_memtotal_mb": 934130.734375, "ansible_net_neighbors": {"Ethernet0/0": [{"host": "SW_ACCESS_1.ansible", "port": "Ethernet1/1"}]}, "ansible_net_python_version": "3.6.9", "ansible_net_serialnum": "67108976", "ansible_net_system": "ios", "ansible_net_version": "15.2(CML_NIGHTLY_20151103)FLO_DSGS7", "ansible_network_resources": {}, "discovered_interpreter_python": "/usr/bin/python"}, "changed": false}
 
-Например, можно отобразить содержимое факта с помощью debug (playbook
-2_ios_facts_debug.yml):
+    PLAY RECAP *************************************************************************************************************
+    SW_CORE_1                  : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    SW_CORE_2                  : ok=1    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
 
-::
+Depois que o Ansible coleta os fatos do dispositivo, todos os fatos ficam disponíveis como variáveis no playbook.
+
+Por exemplo, você pode exibir o conteúdo de um fato usando ``debug``:
+
+.. code:: yaml
 
     ---
-
     - name: Collect IOS facts
-      hosts: 192.168.100.1
+      hosts: ansible_core
+      gather_facts: false
+
+      vars: # Variável de conexão
+        ansible_connection: network_cli
+        ansible_network_os: ios
+        ansible_user: teste
+        ansible_ssh_pass: teste
 
       tasks:
 
@@ -151,133 +132,57 @@ Ansible собирает такие факты:
         - name: Show ansible_net_interfaces fact
           debug: var=ansible_net_interfaces['Ethernet0/0']
 
-Результат выполнения playbook:
+O resultado do manual:
 
-::
+.. code:: bash
+    
+    thiago@thiago-ThinkPad:~/Documentos/Code/Ansible/lab1$ ansible-playbook facts.yml -v
+    Using /home/thiago/Documentos/Code/Ansible/lab1/ansible.cfg as config file
 
-    $ ansible-playbook 2_ios_facts_debug.yml
+    PLAY [Collect IOS facts] ***********************************************************************************************
+    
+    TASK [Show ansible_net_all_ipv4_addresses fact] ************************************************************************
+    ok: [SW_CORE_1] => {
+        "ansible_net_all_ipv4_addresses": [
+            "192.168.36.214"
+        ]
+    }
+    ok: [SW_CORE_2] => {
+        "ansible_net_all_ipv4_addresses": [
+            "192.168.36.215"
+        ]
+    }
 
-.. figure:: https://raw.githubusercontent.com/natenka/PyNEng/master/images/15_ansible/5_ios_facts_debug.png
+    TASK [Show ansible_net_interfaces fact] ******************************************************************************************
+    ok: [SW_CORE_1] => {
+        "ansible_net_interfaces['Ethernet0/0']": {
+            "bandwidth": 10000,
+            "description": null,
+            "duplex": null,
+            "ipv4": [],
+            "lineprotocol": null,
+            "macaddress": "aabb.cc00.6000",
+            "mediatype": "unknown",
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "AmdP2"
+        }
+    }
+    ok: [SW_CORE_2] => {
+        "ansible_net_interfaces['Ethernet0/0']": {
+            "bandwidth": 10000,
+            "description": null,
+            "duplex": null,
+            "ipv4": [],
+            "lineprotocol": null,
+            "macaddress": "aabb.cc00.7000",
+            "mediatype": "unknown",
+            "mtu": 1500,
+            "operstatus": "up",
+            "type": "AmdP2"
+        }
+    }
 
-Сохранение фактов
-~~~~~~~~~~~~~~~~~
-
-В том виде, в котором информация отображается в режиме verbose, довольно
-сложно понять какая информация собирается об устройствах. Для того,
-чтобы лучше понять, какая информация собирается об устройствах и в каком
-формате, скопируем полученную информацию в файл.
-
-Для этого будет использоваться модуль copy.
-
-Playbook 3_ios_facts.yml собирает всю информацию об устройствах и
-записывает в разные файлы (создайте каталог all_facts перед запуском
-playbook или раскомментируйте задачу Create all_facts dir, и Ansible
-создаст каталог сам):
-
-::
-
-    ---
-
-    - name: Collect IOS facts
-      hosts: cisco-routers
-
-      tasks:
-
-        - name: Facts
-          ios_facts:
-            gather_subset: all
-          register: ios_facts_result
-
-        #- name: Create all_facts dir
-        #  file:
-        #    path: ./all_facts/
-        #    state: directory
-        #    mode: 0755
-
-        - name: Copy facts to files
-          copy:
-            content: "{{ ios_facts_result | to_nice_json }}"
-            dest: "all_facts/{{inventory_hostname}}_facts.json"
-
-Модуль copy позволяет копировать файлы с управляющего хоста (на котором
-установлен Ansible) на удаленный хост. Но так как в этом случае, указан
-параметр ``connection: local``, файлы будут скопированы на локальный
-хост.
-
-Чаще всего, модуль copy используется таким образом:
-
-::
-
-    - copy:
-        src: /srv/myfiles/foo.conf
-        dest: /etc/foo.conf
-
-Но в данном случае нет исходного файла, содержимое которого нужно
-скопировать. Вместо этого, есть содержимое переменной
-ios_facts_result, которое нужно перенести в файл
-all_facts/{{inventory_hostname}}_facts.json.
-
-Для того, чтобы перенести содержимое переменной в файл, в модуле copy
-вместо src используется параметр content.
-
-В строке ``content: "{{ ios_facts_result | to_nice_json }}"`` 
-
-* параметр to_nice_json - это фильтр Jinja2, который преобразует
-  информацию переменной в формат, в котором удобней читать информацию 
-* переменная в формате Jinja2 должна быть заключена в двойные фигурные
-  скобки, а также указана в двойных кавычках
-
-Так как в пути dest используются имена устройств, будут сгенерированы
-уникальные файлы для каждого устройства.
-
-Результат выполнения playbook:
-
-::
-
-    $ ansible-playbook 3_ios_facts.yml
-
-.. figure:: https://raw.githubusercontent.com/natenka/PyNEng/master/images/15_ansible/5a_ios_facts.png
-
-После этого в каталоге all_facts находятся такие файлы:
-
-::
-
-    192.168.100.1_facts.json
-    192.168.100.2_facts.json
-    192.168.100.3_facts.json
-
-Содержимое файла all_facts/192.168.100.1_facts.json:
-
-::
-
-    {
-        "ansible_facts": {
-            "ansible_net_all_ipv4_addresses": [
-                "192.168.200.1",
-                "192.168.100.1",
-                "10.1.1.1"
-            ],
-            "ansible_net_all_ipv6_addresses": [],
-            "ansible_net_config": "Building configuration...\n\nCurrent configuration :
-    ...
-
-Сохранение информации об устройствах не только поможет разобраться,
-какая информация собирается, но и может быть полезным для дальнейшего
-использования информации. Например, можно использовать факты об
-устройстве в шаблоне.
-
-При повторном выполнении playbook Ansible не будет изменять информацию в
-файлах, если факты об устройстве не изменились
-
-Если информация изменилась, для соответствующего устройства будет
-выставлен статус changed. Таким образом, по выполнению playbook всегда
-понятно, когда какая-то информация изменилась.
-
-Повторный запуск playbook (без изменений):
-
-::
-
-    $ ansible-playbook 3_ios_facts.yml
-
-.. figure:: https://raw.githubusercontent.com/natenka/PyNEng/master/images/15_ansible/5a_ios_facts_no_change.png
-
+    PLAY RECAP ***********************************************************************************************************************
+    SW_CORE_1                  : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    SW_CORE_2                  : ok=3    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
