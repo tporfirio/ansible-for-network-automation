@@ -16,5 +16,9 @@ Além disso, o Ansible está desenvolvendo ativamente o suporte a equipamentos d
    book/03_network_os_modules/index.rst
    book/04_criando_playbook/index.rst
    book/05_group_vars e host_vars/index.rst
+<<<<<<< HEAD
    book/06_playbook_backup/index.rst
+=======
+   book/06_playbook_backup_/index.rst
+>>>>>>> dd044adf39b7338316559bf3bdd548128817f13e
    book/07_playbooks_/index.rst
