@@ -14,5 +14,5 @@
 
    802.1q
    Criando Vlans
-   HSRP Loading Balancing
+   HSRP Loanding Balancing
    
