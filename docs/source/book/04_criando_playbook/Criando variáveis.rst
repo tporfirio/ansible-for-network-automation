@@ -1,2 +1,0 @@
-Criando variáveis
------------------

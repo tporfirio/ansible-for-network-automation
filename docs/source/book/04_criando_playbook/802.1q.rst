@@ -1,2 +1,88 @@
 802.q
 -----
+
+Nessa sessão iremos habilitar 802.1q nas interfaces dos dispositivos dos grupos ansible_core e ansible_access.
+
+.. code:: yaml
+
+    # 802.1q nas interfaces
+    - name: Configuring 802.1q in the interfaces in core switches
+    hosts: ansible_core
+    gather_facts: false
+
+    vars:
+        ansible_connection: network_cli
+        ansible_network_os: ios
+        ansible_user: teste
+        ansible_ssh_pass: teste
+
+    tasks:    
+        - name: Habilitando 802.1q nas interfaces dos switches core
+        ios_config:        
+            parents: "interface " # Entra nas int listadas no dicio with_items
+            lines: # Executa comandos dentro do modo config-if
+            - switchport trunk encapsulation dot1q
+        with_items:
+            - { interface : Ethernet0/0 }
+            - { interface : Ethernet0/1 }
+            - { interface : Ethernet0/2 }
+            - { interface : Ethernet0/3 }      
+
+        register: print_output
+    
+    - name: HABILITANDO TRUNK MODE NAS INTERFACES ATIVAS DOS SWITCHES CORE
+      ios_l2_interface:
+        aggregate:
+          - name: Ethernet0/0
+            mode: trunk
+            trunk_allowed_vlans: 1-4094
+          - name: Ethernet0/1
+            mode: trunk
+            trunk_allowed_vlans: 1-4094
+          - name: Ethernet0/2
+            mode: trunk
+            trunk_allowed_vlans: 1-4094
+          - name: Ethernet0/3
+            mode: trunk
+            trunk_allowed_vlans: 1-4094
+            
+      register: print_output
+
+As tarefas acima tem como destino ao grupo ansible_core. Iremos aplicar as mesmas tasks acima, porém, deverá mudar as interfaces:
+
+.. code:: yaml
+
+    # 802.1q nas interfaces
+    - name: Configuring 802.1q in the interfaces in access switches
+    hosts: ansible_access
+    gather_facts: false
+
+    vars:
+        ansible_connection: network_cli
+        ansible_network_os: ios
+        ansible_user: teste
+        ansible_ssh_pass: teste
+
+    tasks:    
+        - name: Habilitando 802.1q nas interfaces dos switches access
+        ios_config:        
+            parents: "interface "
+            lines:
+            - switchport trunk encapsulation dot1q
+        with_items:
+            - { interface : Ethernet1/0 }
+            - { interface : Ethernet1/1 }  
+
+        register: print_output
+
+        - name: HABILITANDO TRUNK MODE NAS INTERFACES ATIVAS DOS SWITCHES ACCESS
+            ios_l2_interface:
+            aggregate:
+            - name: Ethernet1/0
+                mode: trunk
+                trunk_allowed_vlans: 1-4094
+            - name: Ethernet1/1
+                mode: trunk
+                trunk_allowed_vlans: 1-4094          
+                
+        register: print_output
