@@ -4,7 +4,7 @@
 
 .. _ansible_basics_index:
 
-4. group_vars e host_vars
+5. group_vars e host_vars
 =========================
 
 
