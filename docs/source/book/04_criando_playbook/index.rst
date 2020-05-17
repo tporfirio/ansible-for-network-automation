@@ -13,5 +13,6 @@
    :maxdepth: 1
 
    802.1q
-   Criando variáveis
+   Criando Vlans
+   HSRP Loading Balancing
    
