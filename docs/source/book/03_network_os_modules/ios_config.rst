@@ -1,42 +1,73 @@
-Модуль ios_config
+Módulo Ios_config
 ==================
 
-Модуль ios_config позволяет настраивать устройства под управлением IOS,
-а также генерировать шаблоны конфигураций или отправлять команды на
-основании шаблона.
+O módulo ios_config permite configurar dispositivos executando o iOS, além de gerar modelos de configuração ou enviar comandos com base no modelo.
 
-Параметры модуля: 
+Lines
+~~~~~
 
-* **after** - какие действия выполнить после команд
-* **before** - какие действия выполнить до команд 
-* **backup** - параметр, который указывает, нужно ли делать резервную копию текущей
-  конфигурации устройства перед внесением изменений. Файл будет
-  копироваться в каталог backup относительно каталога, в котором находится playbook 
-* **config** - параметр, который позволяет указать базовый
-  файл конфигурации, с которым будут сравниваться изменения. Если он
-  указан, модуль не будет скачивать конфигурацию с устройства. 
-* **defaults** - параметр указывает, нужно ли собирать всю информацию с
-  устройства, в том числе, значения по умолчанию. Если включить этот
-  параметр, то модуль будет собирать текущую конфигурацию с помощью
-  команды sh run all. По умолчанию этот параметр отключен, и конфигурация
-  проверяется командой sh run 
-* **lines (commands)** - список команд,
-  которые должны быть настроены. Команды нужно указывать без сокращений и
-  ровно в том виде, в котором они будут в конфигурации. 
-* **match** - параметр указывает, как именно нужно сравнивать команды 
-* **parents** - название секции, в которой нужно применить команды. Если команда
-  находится внутри вложенной секции, нужно указывать весь путь. Если этот
-  параметр не указан, то считается, что команда должна быть в глобальном
-  режиме конфигурации 
-* **replace** - параметр указывает, как выполнять настройку устройства 
-* **save_when** - сохранять ли текущую конфигурацию в стартовую. 
-  По умолчанию конфигурация не сохраняется 
-* **src** - параметр указывает путь к файлу, в котором находится
-  конфигурация или шаблон конфигурации. Взаимоисключающий параметр с lines
-  (то есть, можно указывать или lines, или src). Заменяет модуль
-  ios_template, который скоро будет удален. 
-* **diff_against**, **diff_ignore_lines**, **intended_config** - параметры, которые
-  указывают, какие конфигурации надо сравнивать
+A maneira mais fácil de usar o módulo ios_config é enviar comandos do modo de configuração global com o parâmetro lines Para o parâmetro lines, existem comandos de alias, ou seja, você pode escrever comandos em vez de linhas.
+
+Exemplo:
+
+.. code:: yaml
+    
+    ---
+
+    - name: Configurando
+      hosts: ansible_core
+      gather_facts: false
+
+      vars: # Variável de conexão
+        ansible_connection: network_cli
+        ansible_network_os: ios
+        ansible_user: teste
+        ansible_ssh_pass: teste
+
+      tasks:
+
+        - name: Config username
+          ios_config:
+            lines:
+              - username thiago priv 15 pass thiago
+
+Parents
+~~~~~~~
+
+O parâmetro parents é usado para indicar em qual submodo os comandos são aplicados.
+
+Por exemplo, você precisa aplicar os seguintes comandos:
+
+.. code:: bash
+    
+    SW_CORE_SW2(config)#line vty 0 4    
+    SW_CORE_SW2(config-line)#login local
+    SW_CORE_SW2(config-line)#transport input ssh
+
+Nesse caso, o playbook terá a seguinte aparência:
+
+.. code:: yaml
+
+    
+- name: Configurando SSH
+  hosts: ansible_core
+  gather_facts: false
+
+  vars: # Variável de conexão
+     ansible_connection: network_cli
+     ansible_network_os: ios
+     ansible_user: teste
+     ansible_ssh_pass: teste
+
+  tasks:
+
+    - name: Config line vty
+      ios_config:
+        parents:
+          - line vty 0 4
+        lines:
+          - login local
+          - transport input ssh
 
 .. toctree::
    :maxdepth: 1
