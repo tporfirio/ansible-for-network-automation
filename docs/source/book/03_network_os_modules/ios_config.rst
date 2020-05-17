@@ -47,40 +47,23 @@ Por exemplo, você precisa aplicar os seguintes comandos:
 Nesse caso, o playbook terá a seguinte aparência:
 
 .. code:: yaml
+   
+    - name: Configurando SSH
+      hosts: ansible_core
+      gather_facts: false
 
-    
-- name: Configurando SSH
-  hosts: ansible_core
-  gather_facts: false
+      vars: # Variável de conexão
+         ansible_connection: network_cli
+         ansible_network_os: ios
+         ansible_user: teste
+         ansible_ssh_pass: teste
 
-  vars: # Variável de conexão
-     ansible_connection: network_cli
-     ansible_network_os: ios
-     ansible_user: teste
-     ansible_ssh_pass: teste
+      tasks:
 
-  tasks:
-
-    - name: Config line vty
-      ios_config:
-        parents:
-          - line vty 0 4
-        lines:
-          - login local
-          - transport input ssh
-
-.. toctree::
-   :maxdepth: 1
-
-   ios_config_lines
-   ios_config_parents
-   ios_config_updates
-   ios_config_save_when
-   ios_config_backup
-   ios_config_defaults
-   ios_config_after
-   ios_config_before
-   ios_config_match
-   ios_config_replace
-   ios_config_src
-
+        - name: Config line vty
+          ios_config:
+            parents:
+              - line vty 0 4
+            lines:
+              - login local
+              - transport input ssh
