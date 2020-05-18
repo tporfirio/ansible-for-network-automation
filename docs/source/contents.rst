@@ -5,7 +5,7 @@ Ansible para Automação de Rede
 
     O livro está em processo de escrita!
 
-.. figure:: https://github.com/networkforcode/ansible-for-network-automation/blob/master/images/lab3.jpg
+.. figure:: https://imgur.com/gbKWL3C
 
 Ansible é um sistema de gerenciamento de configuração. O Ansible permite automatizar e simplificar a configuração, manutenção e implantação de servidores, serviços, software, etc.
 
